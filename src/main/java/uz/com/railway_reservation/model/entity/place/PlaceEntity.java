@@ -1,4 +1,4 @@
-package uz.com.railway_reservation.model.place;
+package uz.com.railway_reservation.model.entity.place;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -16,15 +16,16 @@ import uz.com.railway_reservation.model.BaseModel;
 public class PlaceEntity extends BaseModel {
 
     @Column(nullable = false)
-    private String numberOfPlace;
+    private Integer numberOfPlace;
 
     @Column(nullable = false)
-    private String numberOfWagon;
+    private Integer numberOfWagon;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private PlaceType type;
 
+    @Column(nullable = false)
     private PlaceStatus status;
 
     @Column(nullable = false)

@@ -1,4 +1,4 @@
-package uz.com.railway_reservation.model.user;
+package uz.com.railway_reservation.model.entity.user;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -39,6 +39,9 @@ public class UserEntity extends BaseModel implements UserDetails {
     private UserRole role;
 
     private UUID changeRoleBy;
+
+    @Enumerated(EnumType.STRING)
+    private Gender gender;
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         List<SimpleGrantedAuthority> authorities = new ArrayList<>();
