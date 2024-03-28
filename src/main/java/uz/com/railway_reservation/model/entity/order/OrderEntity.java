@@ -1,9 +1,9 @@
-package uz.com.railway_reservation.model.order;
+package uz.com.railway_reservation.model.entity.order;
 
 import jakarta.persistence.*;
 import lombok.*;
 import uz.com.railway_reservation.model.BaseModel;
-import uz.com.railway_reservation.model.user.UserEntity;
+import uz.com.railway_reservation.model.entity.user.UserEntity;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -27,4 +27,6 @@ public class OrderEntity extends BaseModel {
 
     @Column(nullable = false)
     private UUID placeId;
+
+    private Double price;
 }

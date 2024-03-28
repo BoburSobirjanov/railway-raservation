@@ -1,4 +1,4 @@
-package uz.com.railway_reservation.model.order;
+package uz.com.railway_reservation.model.entity.order;
 
 import lombok.Getter;
 

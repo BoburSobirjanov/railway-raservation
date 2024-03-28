@@ -1,4 +1,4 @@
-package uz.com.railway_reservation.model.user;
+package uz.com.railway_reservation.model.entity.user;
 
 import lombok.Getter;
 
