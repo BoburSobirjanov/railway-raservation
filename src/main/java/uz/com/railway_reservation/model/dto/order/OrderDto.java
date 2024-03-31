@@ -1,5 +1,6 @@
 package uz.com.railway_reservation.model.dto.order;
 
+import jakarta.persistence.Column;
 import lombok.*;
 
 @AllArgsConstructor
@@ -9,6 +10,9 @@ import lombok.*;
 @Builder
 public class OrderDto {
 
-    private String placeId;
+    private String startTime;
+    private String wagonId;
+    private String fromWhere;
+    private String toWhere;
 
 }

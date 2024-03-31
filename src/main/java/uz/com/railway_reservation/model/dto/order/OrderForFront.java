@@ -18,7 +18,13 @@ public class OrderForFront {
 
     private OrderStatus status;
 
-    private UUID placeId;
+    private UUID wagonId;
+
+    private LocalDateTime startTime;
+
+    private String fromWhere;
+
+    private String toWhere;
 
     private LocalDateTime endTime;
 

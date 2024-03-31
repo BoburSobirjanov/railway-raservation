@@ -37,6 +37,8 @@ public class UserService {
         userEntity.setGender(Gender.valueOf(userDto.getGender()));
         userEntity.setNumber(userDto.getNumber());
         userEntity=userRepository.save(userEntity);
+        userEntity.setCreatedBy(userEntity.getId());
+        userRepository.save(userEntity);
         String accessToken = jwtService.generateAccessToken(userEntity);
         String refreshToken = jwtService.generateRefreshToken(userEntity);
         UserForFront user = modelMapper.map(userEntity, UserForFront.class);
