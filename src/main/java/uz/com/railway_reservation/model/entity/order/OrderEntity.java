@@ -23,10 +23,18 @@ public class OrderEntity extends BaseModel {
     @Column(nullable = false)
     private OrderStatus status;
 
-    private LocalDateTime endTime;
+    @Column(nullable = false)
+    private String fromWhere;
 
     @Column(nullable = false)
-    private UUID placeId;
+    private String toWhere;
+
+    private LocalDateTime startTime;
+
+    @Column(nullable = false)
+    private UUID wagonId;
+
+    private LocalDateTime endTime;
 
     private Double price;
 }
