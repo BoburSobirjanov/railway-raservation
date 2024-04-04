@@ -1,5 +1,6 @@
 package uz.com.railway_reservation.model.entity.order;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import lombok.*;
 import uz.com.railway_reservation.model.BaseModel;
@@ -29,12 +30,16 @@ public class OrderEntity extends BaseModel {
     @Column(nullable = false)
     private String toWhere;
 
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime startTime;
 
     @Column(nullable = false)
     private UUID wagonId;
 
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime endTime;
 
     private Double price;
+
+    private UUID changeStatusBy;
 }
