@@ -3,9 +3,10 @@ package uz.com.railway_reservation.model.entity.wagon;
 import jakarta.persistence.*;
 import lombok.*;
 import uz.com.railway_reservation.model.BaseModel;
-import uz.com.railway_reservation.model.entity.train.TrainEntity;
+import uz.com.railway_reservation.model.entity.order.OrderEntity;
 
-import java.util.UUID;
+import java.util.List;
+
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -21,19 +22,16 @@ public class WagonEntity extends BaseModel {
     @Column(nullable = false)
     private String capacity;
 
-    private UUID trainId;
-
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private WagonType type;
-
-    @Column(nullable = false)
-    @Enumerated(EnumType.STRING)
-    private WagonStatus status;
 
     private Double price;
 
     @Column(nullable = false)
     private String description;
+
+    @OneToMany(mappedBy = "id",cascade = CascadeType.ALL)
+    private List<OrderEntity> orders;
 
 }

@@ -13,8 +13,6 @@ public class WagonDto {
 
     private String type;
 
-    private String trainId;
-
     private String description;
 
     private String capacity;
