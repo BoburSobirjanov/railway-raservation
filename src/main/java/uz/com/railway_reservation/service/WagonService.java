@@ -9,10 +9,10 @@ import uz.com.railway_reservation.exception.NotAcceptableException;
 import uz.com.railway_reservation.model.dto.wagon.WagonDto;
 import uz.com.railway_reservation.model.dto.wagon.WagonForFront;
 import uz.com.railway_reservation.model.entity.order.OrderEntity;
-import uz.com.railway_reservation.model.entity.order.OrderStatus;
 import uz.com.railway_reservation.model.entity.user.UserEntity;
 import uz.com.railway_reservation.model.entity.wagon.WagonEntity;
 import uz.com.railway_reservation.model.entity.wagon.WagonType;
+import uz.com.railway_reservation.repository.OrderRepository;
 import uz.com.railway_reservation.repository.UserRepository;
 import uz.com.railway_reservation.repository.WagonRepository;
 import uz.com.railway_reservation.response.StandardResponse;
@@ -28,6 +28,7 @@ import java.util.List;
 public class WagonService {
     private final ModelMapper modelMapper;
     private final WagonRepository wagonRepository;
+    private final OrderRepository orderRepository;
     private final UserRepository userRepository;
 
     public StandardResponse<WagonForFront> save(WagonDto wagonDto, Principal principal){
@@ -65,10 +66,10 @@ public class WagonService {
         if (wagon==null){
             throw new DataNotFoundException("Wagon not found!");
         }
-        List<OrderEntity> orderEntities = wagon.getOrders();
+        List<OrderEntity> orderEntities = orderRepository.findOrderEntityByWagonId(wagon.getId());
         if (orderEntities!=null){
             for (OrderEntity order:orderEntities) {
-                if ((order.getStartTime().isAfter(LocalDateTime.now()) || order.getStartTime().isEqual(LocalDateTime.now()))&&order.getStatus()==OrderStatus.PROGRESS){
+                if (order.getStartTime().isAfter(LocalDateTime.now()) || order.getStartTime().isEqual(LocalDateTime.now())){
                     throw new NotAcceptableException("You can not delete wagon. Because it has order!");
                 }
             }
@@ -82,5 +83,21 @@ public class WagonService {
                 .message("Wagon deleted!")
                 .data("DELETED")
                 .build();
+    }
+
+    public List<WagonEntity> getByType(String type){
+        List<WagonEntity> wagon = wagonRepository.findWagonEntityByType(type);
+        if (wagon==null){
+            throw new DataNotFoundException("Wagon not found same this type!");
+        }
+        return wagon;
+    }
+
+    public List<WagonEntity> getAll(){
+        List<WagonEntity> wagonEntities = wagonRepository.getAll();
+        if (wagonEntities==null){
+            throw new DataNotFoundException("Wagons not found!");
+        }
+        return wagonEntities;
     }
 }

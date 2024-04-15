@@ -6,6 +6,7 @@ import org.springframework.stereotype.Repository;
 import uz.com.railway_reservation.model.entity.wagon.WagonEntity;
 
 
+import java.util.List;
 import java.util.UUID;
 
 @Repository
@@ -14,4 +15,8 @@ public interface WagonRepository extends JpaRepository<WagonEntity, UUID> {
     WagonEntity findWagonEntityByNumber(String number);
     @Query("select u from wagons as u where u.isDeleted=false and u.id=?1")
     WagonEntity findWagonEntityById(UUID id);
+    @Query("select u from wagons as u where u.isDeleted=false and u.type=?1")
+    List<WagonEntity>findWagonEntityByType(String type);
+    @Query("select u from wagons as u where u.isDeleted=false")
+    List<WagonEntity> getAll();
 }

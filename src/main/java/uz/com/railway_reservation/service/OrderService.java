@@ -8,7 +8,6 @@ import uz.com.railway_reservation.exception.NotAcceptableException;
 import uz.com.railway_reservation.model.dto.order.OrderDto;
 import uz.com.railway_reservation.model.dto.order.OrderForFront;
 import uz.com.railway_reservation.model.entity.order.OrderEntity;
-import uz.com.railway_reservation.model.entity.order.OrderStatus;
 import uz.com.railway_reservation.model.entity.user.UserEntity;
 import uz.com.railway_reservation.model.entity.wagon.WagonEntity;
 import uz.com.railway_reservation.repository.OrderRepository;
@@ -37,9 +36,9 @@ public class OrderService {
         if (wagon==null){
             throw new DataNotFoundException("Wagon not found same this id!");
         }
-        List<OrderEntity> orderEntities = wagon.getOrders();
+        List<OrderEntity> orderEntities = orderRepository.findOrderEntityByWagonId(wagon.getId());
         for (OrderEntity order: orderEntities) {
-            DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+            DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm");
             LocalDateTime startTime = LocalDateTime.parse(orderDto.getStartTime(),dateTimeFormatter);
             if((startTime.isAfter(order.getStartTime()) && startTime.isBefore(order.getEndTime()))
                     || startTime.isEqual(order.getStartTime()) || startTime.isBefore(LocalDateTime.now())){
@@ -50,7 +49,6 @@ public class OrderService {
             throw new NotAcceptableException("Time is not available!");
         }
         OrderEntity orderEntity = modelMapper.map(orderDto, OrderEntity.class);
-        orderEntity.setStatus(OrderStatus.PROGRESS);
         orderEntity.setPrice(wagon.getPrice());
         orderEntity.setStartTime(LocalDateTime.parse(orderDto.getStartTime()));
         orderEntity.setFromWhere(orderDto.getFromWhere());
@@ -58,7 +56,7 @@ public class OrderService {
         orderEntity.setWagonId(UUID.fromString(orderDto.getWagonId()));
         orderEntity.setCreatedBy(user.getId());
         orderEntity.setOwner(user);
-        orderEntity.setEndTime(LocalDateTime.parse(orderDto.getStartTime()).plusHours(5));
+        orderEntity.setEndTime(LocalDateTime.parse(orderDto.getEndTime()));
         orderRepository.save(orderEntity);
         OrderForFront orderForFront = modelMapper.map(orderEntity, OrderForFront.class);
         return StandardResponse.<OrderForFront>builder()
@@ -74,7 +72,7 @@ public class OrderService {
         if (order==null){
             throw new DataNotFoundException("Order not found!");
         }
-        order.setStatus(OrderStatus.CANCELED);
+        order.setCancel(true);
         order.setChangeStatusBy(user.getId());
        OrderEntity save = orderRepository.save(order);
        OrderForFront orderForFront = modelMapper.map(save, OrderForFront.class);
@@ -83,5 +81,39 @@ public class OrderService {
                .status(Status.SUCCESS)
                .message("CANCELED")
                .build();
+   }
+
+   public StandardResponse<OrderForFront> delete(UUID id, Principal principal){
+       UserEntity user = userRepository.findUserEntityByEmail(principal.getName());
+       OrderEntity order = orderRepository.findOrderEntityById(id);
+       if (order==null){
+           throw new DataNotFoundException("Order not found!");
+       }
+       order.setDeleted(true);
+       order.setDeletedBy(user.getId());
+       order.setDeletedTime(LocalDateTime.now());
+       OrderEntity save = orderRepository.save(order);
+       OrderForFront orderForFront = modelMapper.map(save, OrderForFront.class);
+       return StandardResponse.<OrderForFront>builder()
+               .data(orderForFront)
+               .status(Status.SUCCESS)
+               .message("DELETED")
+               .build();
+   }
+
+   public List<OrderEntity> getCanceledOrders(String cancel){
+        List<OrderEntity> orderEntities= orderRepository.findOrderEntityByCancel(cancel);
+        if (orderEntities==null){
+            throw new DataNotFoundException("Canceled orders not found!");
+        }
+        return orderEntities;
+   }
+
+   public List<OrderEntity> getAll(){
+       List<OrderEntity> orderEntities= orderRepository.getAll();
+       if (orderEntities==null){
+           throw new DataNotFoundException("Orders not found!");
+       }
+       return orderEntities;
    }
 }

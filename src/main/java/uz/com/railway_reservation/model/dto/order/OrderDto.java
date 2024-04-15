@@ -11,6 +11,7 @@ import lombok.*;
 public class OrderDto {
 
     private String startTime;
+    private String endTime;
     private String wagonId;
     private String fromWhere;
     private String toWhere;
