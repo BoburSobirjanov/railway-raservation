@@ -19,6 +19,10 @@ import uz.com.railway_reservation.response.StandardResponse;
 import uz.com.railway_reservation.response.Status;
 import uz.com.railway_reservation.service.auth.JwtService;
 
+import java.security.Principal;
+import java.time.LocalDateTime;
+import java.util.UUID;
+
 @Service
 @RequiredArgsConstructor
 public class UserService {
@@ -87,7 +91,47 @@ public class UserService {
             throw new AuthenticationFailedException("Something error during signed in!");
         }
     }
+    public StandardResponse<String> delete(UUID id, Principal principal){
+        UserEntity user = userRepository.findUserEntityByEmail(principal.getName());
+        UserEntity userEntity = userRepository.findUserEntityById(id);
+        if (userEntity==null){
+            throw new DataNotFoundException("User not found!");
+        }
+        userEntity.setDeleted(true);
+        userEntity.setDeletedBy(user.getId());
+        userEntity.setDeletedTime(LocalDateTime.now());
+        userRepository.save(userEntity);
+        return StandardResponse.<String>builder()
+                .data("User deleted successfully!")
+                .status(Status.SUCCESS)
+                .message("DELETED")
+                .build();
+    }
+
+    public StandardResponse<UserForFront> getByEmail(String email){
+        UserEntity userEntity = userRepository.findUserEntityByEmail(email);
+        if (userEntity==null){
+            throw new DataNotFoundException("User not found!");
+        }
+        UserForFront user = modelMapper.map(userEntity, UserForFront.class);
+        return StandardResponse.<UserForFront>builder()
+                .status(Status.SUCCESS)
+                .data(user)
+                .message("This is user")
+                .build();
+    }
 
 
-
+    public StandardResponse<UserForFront> getById(UUID id){
+        UserEntity userEntity = userRepository.findUserEntityById(id);
+        if (userEntity==null){
+            throw new DataNotFoundException("User not found!");
+        }
+        UserForFront user = modelMapper.map(userEntity, UserForFront.class);
+        return StandardResponse.<UserForFront>builder()
+                .status(Status.SUCCESS)
+                .data(user)
+                .message("This is user")
+                .build();
+    }
 }
