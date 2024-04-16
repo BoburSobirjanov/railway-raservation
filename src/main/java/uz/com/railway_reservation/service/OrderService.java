@@ -40,10 +40,15 @@ public class OrderService {
         for (OrderEntity order: orderEntities) {
             DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm");
             LocalDateTime startTime = LocalDateTime.parse(orderDto.getStartTime(),dateTimeFormatter);
+            LocalDateTime endTime = LocalDateTime.parse(orderDto.getEndTime(),dateTimeFormatter);
             if((startTime.isAfter(order.getStartTime()) && startTime.isBefore(order.getEndTime()))
-                    || startTime.isEqual(order.getStartTime()) || startTime.isBefore(LocalDateTime.now())){
+                    || startTime.isEqual(order.getStartTime()) || startTime.isBefore(LocalDateTime.now()) || startTime.isAfter(endTime)){
             throw new NotAcceptableException("Wagon is busy in this time!");
         }
+            if((endTime.isAfter(order.getStartTime()) && endTime.isBefore(order.getEndTime()))
+                    || endTime.isBefore(LocalDateTime.now()) || endTime.isBefore(startTime) || endTime.isEqual(order.getEndTime())){
+                throw new NotAcceptableException("Wagon is busy in this time!");
+            }
     }
         if (LocalDateTime.parse(orderDto.getStartTime()).isBefore(LocalDateTime.now())){
             throw new NotAcceptableException("Time is not available!");
@@ -88,6 +93,9 @@ public class OrderService {
        OrderEntity order = orderRepository.findOrderEntityById(id);
        if (order==null){
            throw new DataNotFoundException("Order not found!");
+       }
+       if(order.getEndTime().isAfter(LocalDateTime.now()) || order.isCancel()){
+           throw new NotAcceptableException("Can not delete this order. Because this order has not passed yet!");
        }
        order.setDeleted(true);
        order.setDeletedBy(user.getId());

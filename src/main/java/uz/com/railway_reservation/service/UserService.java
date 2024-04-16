@@ -6,13 +6,16 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import uz.com.railway_reservation.exception.AuthenticationFailedException;
 import uz.com.railway_reservation.exception.DataNotFoundException;
+import uz.com.railway_reservation.exception.NotAcceptableException;
 import uz.com.railway_reservation.exception.UserBadRequestException;
 import uz.com.railway_reservation.model.dto.user.LoginDto;
 import uz.com.railway_reservation.model.dto.user.UserDto;
 import uz.com.railway_reservation.model.dto.user.UserForFront;
+import uz.com.railway_reservation.model.entity.order.OrderEntity;
 import uz.com.railway_reservation.model.entity.user.Gender;
 import uz.com.railway_reservation.model.entity.user.UserEntity;
 import uz.com.railway_reservation.model.entity.user.UserRole;
+import uz.com.railway_reservation.repository.OrderRepository;
 import uz.com.railway_reservation.repository.UserRepository;
 import uz.com.railway_reservation.response.JwtResponse;
 import uz.com.railway_reservation.response.StandardResponse;
@@ -21,6 +24,8 @@ import uz.com.railway_reservation.service.auth.JwtService;
 
 import java.security.Principal;
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -29,6 +34,7 @@ public class UserService {
     private final ModelMapper modelMapper;
     private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
+    private final OrderRepository orderRepository;
     private final JwtService jwtService;
 
     public StandardResponse<JwtResponse> signUp(UserDto userDto){
@@ -93,6 +99,12 @@ public class UserService {
     }
     public StandardResponse<String> delete(UUID id, Principal principal){
         UserEntity user = userRepository.findUserEntityByEmail(principal.getName());
+        List<OrderEntity> orderEntities= orderRepository.findOrderEntityByCreatedBy(id);
+        for (OrderEntity order: orderEntities) {
+            if (order.getEndTime().isAfter(LocalDateTime.now())){
+                throw new NotAcceptableException("Can not delete this user. Because user has active order!");
+            }
+        }
         UserEntity userEntity = userRepository.findUserEntityById(id);
         if (userEntity==null){
             throw new DataNotFoundException("User not found!");
@@ -132,6 +144,27 @@ public class UserService {
                 .status(Status.SUCCESS)
                 .data(user)
                 .message("This is user")
+                .build();
+    }
+
+    public List<UserEntity> getAll(){
+        List<UserEntity> userEntities = userRepository.getAll();
+        if (userEntities==null){
+            throw new DataNotFoundException("Users not found!");
+        }
+        return userEntities;
+    }
+
+    public StandardResponse<UserForFront> getByNumber(String number){
+        Optional<UserEntity> userEntity = userRepository.findUserEntityByNumber(number);
+        if (userEntity.isEmpty()){
+            throw new DataNotFoundException("User not found!");
+        }
+        UserForFront user = modelMapper.map(userEntity, UserForFront.class);
+        return StandardResponse.<UserForFront>builder()
+                .status(Status.SUCCESS)
+                .data(user)
+                .message("This is user!")
                 .build();
     }
 }
