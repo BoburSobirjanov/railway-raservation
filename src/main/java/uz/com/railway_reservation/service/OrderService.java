@@ -17,6 +17,7 @@ import uz.com.railway_reservation.response.StandardResponse;
 import uz.com.railway_reservation.response.Status;
 
 import java.security.Principal;
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -33,14 +34,14 @@ public class OrderService {
     public StandardResponse<OrderForFront> save(OrderDto orderDto, Principal principal){
         UserEntity user = userRepository.findUserEntityByEmail(principal.getName());
         WagonEntity wagon = wagonRepository.findWagonEntityById(UUID.fromString(orderDto.getWagonId()));
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm");
+        LocalDateTime startTime = LocalDateTime.parse(orderDto.getStartTime(),dateTimeFormatter);
+        LocalDateTime endTime = LocalDateTime.parse(orderDto.getEndTime(),dateTimeFormatter);
         if (wagon==null){
             throw new DataNotFoundException("Wagon not found same this id!");
         }
         List<OrderEntity> orderEntities = orderRepository.findOrderEntityByWagonId(wagon.getId());
         for (OrderEntity order: orderEntities) {
-            DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm");
-            LocalDateTime startTime = LocalDateTime.parse(orderDto.getStartTime(),dateTimeFormatter);
-            LocalDateTime endTime = LocalDateTime.parse(orderDto.getEndTime(),dateTimeFormatter);
             if((startTime.isAfter(order.getStartTime()) && startTime.isBefore(order.getEndTime()))
                     || startTime.isEqual(order.getStartTime()) || startTime.isBefore(LocalDateTime.now()) || startTime.isAfter(endTime)){
             throw new NotAcceptableException("Wagon is busy in this time!");
@@ -54,7 +55,9 @@ public class OrderService {
             throw new NotAcceptableException("Time is not available!");
         }
         OrderEntity orderEntity = modelMapper.map(orderDto, OrderEntity.class);
-        orderEntity.setPrice(wagon.getPrice());
+        Duration duration = Duration.between(startTime, endTime);
+        Long hours = duration.toHours();
+        orderEntity.setPrice(wagon.getPrice()*hours);
         orderEntity.setStartTime(LocalDateTime.parse(orderDto.getStartTime()));
         orderEntity.setFromWhere(orderDto.getFromWhere());
         orderEntity.setToWhere(orderDto.getToWhere());
