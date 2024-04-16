@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import uz.com.railway_reservation.model.entity.user.UserEntity;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 @Repository
@@ -15,4 +16,6 @@ public interface UserRepository extends JpaRepository<UserEntity, UUID> {
     Optional<UserEntity> findUserEntityByNumber(String number);
     @Query("select u from users as u where u.isDeleted=false and u.id=?1")
     UserEntity findUserEntityById(UUID id);
+    @Query("select u from users as u where u.isDeleted=false")
+    List<UserEntity> getAll();
 }
