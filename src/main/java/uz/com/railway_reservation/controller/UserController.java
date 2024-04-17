@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import uz.com.railway_reservation.model.dto.user.AdminDto;
+import uz.com.railway_reservation.model.dto.user.UserDto;
 import uz.com.railway_reservation.model.dto.user.UserForFront;
 import uz.com.railway_reservation.model.entity.user.UserEntity;
 import uz.com.railway_reservation.response.StandardResponse;
@@ -65,5 +66,13 @@ public class UserController {
             Principal principal
             ){
         return userService.addAdmin(adminDto, principal);
+    }
+
+    @PostMapping("/update-profile")
+    public StandardResponse<UserForFront> update(
+            @RequestBody UserDto userDto,
+            Principal principal
+            ){
+      return  userService.update(userDto, principal);
     }
 }

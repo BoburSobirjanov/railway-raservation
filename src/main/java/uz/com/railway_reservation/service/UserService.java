@@ -45,7 +45,11 @@ public class UserService {
         userEntity.setRole(UserRole.USER);
         userEntity.setFullName(userDto.getFullName());
         userEntity.setEmail(userDto.getEmail());
+        try{
         userEntity.setGender(Gender.valueOf(userDto.getGender()));
+        }catch (Exception e){
+            throw new NotAcceptableException("Invalid gender type!");
+        }
         userEntity.setNumber(userDto.getNumber());
         userEntity=userRepository.save(userEntity);
         userEntity.setCreatedBy(userEntity.getId());
@@ -182,6 +186,30 @@ public class UserService {
                 .status(Status.SUCCESS)
                 .data(userForFront)
                 .message("Admin added!")
+                .build();
+    }
+
+    public StandardResponse<UserForFront> update(UserDto userDto,Principal principal){
+        UserEntity userEntity = userRepository.findUserEntityByEmail(principal.getName());
+        if (userEntity==null){
+            throw new DataNotFoundException("User not found!");
+        }
+        userEntity.setUpdatedTime(LocalDateTime.now());
+        userEntity.setFullName(userDto.getFullName());
+        userEntity.setPassword(passwordEncoder.encode(userDto.getPassword()));
+        try{
+        userEntity.setGender(Gender.valueOf(userDto.getGender()));
+        }catch (Exception e){
+            throw new NotAcceptableException("Invalid gender type!");
+        }
+        userEntity.setEmail(userDto.getEmail());
+        userEntity.setNumber(userDto.getNumber());
+        UserEntity save = userRepository.save(userEntity);
+        UserForFront userForFront = modelMapper.map(save, UserForFront.class);
+        return StandardResponse.<UserForFront>builder()
+                .status(Status.SUCCESS)
+                .data(userForFront)
+                .message("Profile updated!")
                 .build();
     }
 }

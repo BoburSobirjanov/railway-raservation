@@ -47,4 +47,13 @@ public class WagonController {
     public List<WagonEntity> getAll(){
         return wagonService.getAll();
     }
+
+    @PostMapping("/update-wagon")
+    @PreAuthorize("hasRole('ADMIN')")
+    public StandardResponse<WagonForFront> updateWagon(
+            @RequestBody WagonDto wagonDto,
+            Principal principal
+    ){
+        return wagonService.updateWagon(wagonDto, principal);
+    }
 }
