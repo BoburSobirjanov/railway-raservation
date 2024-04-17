@@ -8,6 +8,7 @@ import uz.com.railway_reservation.exception.AuthenticationFailedException;
 import uz.com.railway_reservation.exception.DataNotFoundException;
 import uz.com.railway_reservation.exception.NotAcceptableException;
 import uz.com.railway_reservation.exception.UserBadRequestException;
+import uz.com.railway_reservation.model.dto.user.AdminDto;
 import uz.com.railway_reservation.model.dto.user.LoginDto;
 import uz.com.railway_reservation.model.dto.user.UserDto;
 import uz.com.railway_reservation.model.dto.user.UserForFront;
@@ -165,6 +166,22 @@ public class UserService {
                 .status(Status.SUCCESS)
                 .data(user)
                 .message("This is user!")
+                .build();
+    }
+    public StandardResponse<UserForFront> addAdmin(AdminDto adminDto, Principal principal){
+        UserEntity userEntity=  userRepository.findUserEntityByEmail(adminDto.getEmail());
+        UserEntity user = userRepository.findUserEntityByEmail(principal.getName());
+        if (userEntity==null){
+            throw new DataNotFoundException("User not found same this email!");
+        }
+        userEntity.setRole(UserRole.ADMIN);
+        userEntity.setChangeRoleBy(user.getId());
+        UserEntity save = userRepository.save(userEntity);
+        UserForFront userForFront = modelMapper.map(save, UserForFront.class);
+        return StandardResponse.<UserForFront>builder()
+                .status(Status.SUCCESS)
+                .data(userForFront)
+                .message("Admin added!")
                 .build();
     }
 }
