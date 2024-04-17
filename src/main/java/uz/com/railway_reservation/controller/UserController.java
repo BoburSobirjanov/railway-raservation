@@ -3,6 +3,7 @@ package uz.com.railway_reservation.controller;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import uz.com.railway_reservation.model.dto.user.AdminDto;
 import uz.com.railway_reservation.model.dto.user.UserForFront;
 import uz.com.railway_reservation.model.entity.user.UserEntity;
 import uz.com.railway_reservation.response.StandardResponse;
@@ -56,5 +57,13 @@ public class UserController {
             @RequestParam String number
     ){
         return userService.getByNumber(number);
+    }
+
+    @PostMapping("/change-role-to-admin-or-add-new-admin")
+    public StandardResponse<UserForFront> addAdmin(
+            @RequestBody AdminDto adminDto,
+            Principal principal
+            ){
+        return userService.addAdmin(adminDto, principal);
     }
 }
