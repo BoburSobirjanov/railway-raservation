@@ -3,6 +3,7 @@ package uz.com.railway_reservation.controller;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import uz.com.railway_reservation.model.dto.order.ChangeOrderTime;
 import uz.com.railway_reservation.model.dto.order.OrderDto;
 import uz.com.railway_reservation.model.dto.order.OrderForFront;
 import uz.com.railway_reservation.model.entity.order.OrderEntity;
@@ -56,5 +57,14 @@ public class OrderController {
     @PreAuthorize("hasRole('ADMIN')")
     public List<OrderEntity> getAll(){
         return orderService.getAll();
+    }
+
+    @PostMapping("/{id}/change-order-time")
+    public StandardResponse<OrderForFront> changeOrderTime(
+            @RequestBody ChangeOrderTime change,
+            @PathVariable UUID id,
+            Principal principal
+            ){
+       return orderService.changeOrderTime(id, change,principal);
     }
 }

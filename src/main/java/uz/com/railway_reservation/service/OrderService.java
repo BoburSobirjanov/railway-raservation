@@ -5,6 +5,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import uz.com.railway_reservation.exception.DataNotFoundException;
 import uz.com.railway_reservation.exception.NotAcceptableException;
+import uz.com.railway_reservation.model.dto.order.ChangeOrderTime;
 import uz.com.railway_reservation.model.dto.order.OrderDto;
 import uz.com.railway_reservation.model.dto.order.OrderForFront;
 import uz.com.railway_reservation.model.entity.order.OrderEntity;
@@ -126,5 +127,31 @@ public class OrderService {
            throw new DataNotFoundException("Orders not found!");
        }
        return orderEntities;
+   }
+
+   public StandardResponse<OrderForFront> changeOrderTime(UUID id, ChangeOrderTime change,Principal principal){
+        UserEntity user = userRepository.findUserEntityByEmail(principal.getName());
+        OrderEntity order = orderRepository.findOrderEntityById(id);
+       DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm");
+       LocalDateTime startTime = LocalDateTime.parse(change.getStartTime(),dateTimeFormatter);
+       LocalDateTime endTime = LocalDateTime.parse(change.getEndTime(),dateTimeFormatter);
+        if (order==null){
+            throw new DataNotFoundException("Order not found!");
+        }
+        if (order.getCreatedBy()!=user.getId()){
+            throw new NotAcceptableException("You can not change this order. Because you are not order's owner!");
+        }
+        if (order.getStartTime().isAfter(LocalDateTime.now().minusHours(12))){
+            throw new NotAcceptableException("You can change the order's start time to 12 hours earlier");
+        }
+        order.setStartTime(startTime);
+        order.setEndTime(endTime);
+       OrderEntity save = orderRepository.save(order);
+       OrderForFront orderForFront = modelMapper.map(save, OrderForFront.class);
+       return StandardResponse.<OrderForFront>builder()
+               .status(Status.SUCCESS)
+               .data(orderForFront)
+               .message("Order's times changed!")
+               .build();
    }
 }
