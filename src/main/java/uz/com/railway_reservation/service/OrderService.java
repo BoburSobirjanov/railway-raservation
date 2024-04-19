@@ -55,6 +55,9 @@ public class OrderService {
         if (LocalDateTime.parse(orderDto.getStartTime()).isBefore(LocalDateTime.now())){
             throw new NotAcceptableException("Time is not available!");
         }
+        if (endTime.isAfter(startTime)){
+            throw new NotAcceptableException("Times is not available");
+        }
         OrderEntity orderEntity = modelMapper.map(orderDto, OrderEntity.class);
         Duration duration = Duration.between(startTime, endTime);
         Long hours = duration.toHours();
@@ -80,6 +83,9 @@ public class OrderService {
         OrderEntity order = orderRepository.findOrderEntityById(id);
         if (order==null){
             throw new DataNotFoundException("Order not found!");
+        }
+        if(order.getStartTime().isAfter(LocalDateTime.now().minusHours(24))){
+            throw new NotAcceptableException("You can cancel order before 24 hours start time!");
         }
         order.setCancel(true);
         order.setChangeStatusBy(user.getId());
@@ -141,8 +147,8 @@ public class OrderService {
         if (order.getCreatedBy()!=user.getId()){
             throw new NotAcceptableException("You can not change this order. Because you are not order's owner!");
         }
-        if (order.getStartTime().isAfter(LocalDateTime.now().minusHours(12))){
-            throw new NotAcceptableException("You can change the order's start time to 12 hours earlier");
+        if (order.getStartTime().isAfter(LocalDateTime.now().minusHours(24))){
+            throw new NotAcceptableException("You can change the order's start time to 24 hours earlier");
         }
         order.setStartTime(startTime);
         order.setEndTime(endTime);
