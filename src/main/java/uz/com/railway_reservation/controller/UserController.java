@@ -21,7 +21,7 @@ public class UserController {
 
     private final UserService userService;
 
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping("/{id}/delete")
     @PreAuthorize("hasRole('ADMIN')")
     public StandardResponse<String> delete(
             @PathVariable UUID id,
