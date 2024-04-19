@@ -36,20 +36,20 @@ public class OrderController {
         return orderService.cancelOrder(id, principal);
     }
 
-    @DeleteMapping("/delete")
+    @DeleteMapping("/delete/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public StandardResponse<OrderForFront> delete(
-            @RequestParam UUID id,
+            @PathVariable UUID id,
             Principal principal
     ){
         return orderService.delete(id, principal);
     }
 
     @GetMapping("/get-canceled-orders")
+    @PreAuthorize("hasRole('ADMIN')")
     public List<OrderEntity> getCanceledOrders(
-            @RequestParam String cancel
     ){
-        return orderService.getCanceledOrders(cancel);
+        return orderService.getCanceledOrders();
     }
 
     @GetMapping("/get-all")

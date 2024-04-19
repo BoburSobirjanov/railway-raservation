@@ -14,7 +14,7 @@ public interface OrderRepository extends JpaRepository<OrderEntity, UUID> {
     @Query("select u from orders as u where u.isDeleted=false and u.wagonId=?1")
     List<OrderEntity> findOrderEntityByWagonId(UUID id);
     @Query("select u from orders as u where u.isDeleted=false and u.isCancel=true")
-    List<OrderEntity> findOrderEntityByCancel(String cancel);
+    List<OrderEntity> findOrderEntityByCancel();
     @Query("select u from orders as u where u.isDeleted=false")
     List<OrderEntity> getAll();
     @Query("select u from orders as u where u.isDeleted=false and u.createdBy=?1")

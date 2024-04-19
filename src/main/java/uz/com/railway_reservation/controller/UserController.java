@@ -21,16 +21,16 @@ public class UserController {
 
     private final UserService userService;
 
-    @DeleteMapping("/delete")
+    @DeleteMapping("/delete/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public StandardResponse<String> delete(
-            @RequestParam UUID id,
+            @PathVariable UUID id,
             Principal principal
             ){
       return userService.delete(id, principal);
     }
 
-    @PostMapping("/get-by-email")
+    @GetMapping("/get-by-email")
     @PreAuthorize("hasRole('ADMIN')")
     public StandardResponse<UserForFront> getByEmail(
             @RequestParam String email

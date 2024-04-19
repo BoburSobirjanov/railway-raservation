@@ -113,8 +113,8 @@ public class OrderService {
                .build();
    }
 
-   public List<OrderEntity> getCanceledOrders(String cancel){
-        List<OrderEntity> orderEntities= orderRepository.findOrderEntityByCancel(cancel);
+   public List<OrderEntity> getCanceledOrders(){
+        List<OrderEntity> orderEntities= orderRepository.findOrderEntityByCancel();
         if (orderEntities==null){
             throw new DataNotFoundException("Canceled orders not found!");
         }

@@ -28,10 +28,10 @@ public class WagonController {
         return wagonService.save(wagonDto, principal);
     }
 
-    @DeleteMapping("/delete")
+    @DeleteMapping("/delete/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public StandardResponse<String> delete(
-            @RequestParam UUID id,
+            @PathVariable UUID id,
             Principal principal
     ){
         return wagonService.delete(id, principal);
