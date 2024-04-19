@@ -36,7 +36,7 @@ public class OrderController {
         return orderService.cancelOrder(id, principal);
     }
 
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping("/{id}/delete")
     @PreAuthorize("hasRole('ADMIN')")
     public StandardResponse<OrderForFront> delete(
             @PathVariable UUID id,
