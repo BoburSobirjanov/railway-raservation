@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.*;
 import uz.com.railway_reservation.model.dto.user.AdminDto;
 import uz.com.railway_reservation.model.dto.user.UserDto;
 import uz.com.railway_reservation.model.dto.user.UserForFront;
+import uz.com.railway_reservation.model.entity.order.OrderEntity;
 import uz.com.railway_reservation.model.entity.user.UserEntity;
 import uz.com.railway_reservation.response.StandardResponse;
 import uz.com.railway_reservation.service.UserService;
@@ -38,10 +39,10 @@ public class UserController {
         return userService.getByEmail(email);
     }
 
-    @GetMapping("/get-by-id")
+    @GetMapping("/{id}/get-by-id")
     @PreAuthorize("hasRole('ADMIN')")
     public StandardResponse<UserForFront> getById(
-            @RequestParam UUID id
+            @PathVariable UUID id
     ){
         return userService.getById(id);
     }
@@ -68,11 +69,19 @@ public class UserController {
         return userService.addAdmin(adminDto, principal);
     }
 
-    @PutMapping("/update-profile")
+    @PutMapping("/{id}/update-profile")
     public StandardResponse<UserForFront> update(
+            @PathVariable UUID id,
             @RequestBody UserDto userDto,
             Principal principal
             ){
-      return  userService.update(userDto, principal);
+      return  userService.update(userDto, principal,id);
+    }
+
+    @GetMapping("/{id}/get-my-orders")
+    public List<OrderEntity> getMyOrders(
+            @PathVariable UUID id
+    ){
+        return userService.getMyOrders(id);
     }
 }

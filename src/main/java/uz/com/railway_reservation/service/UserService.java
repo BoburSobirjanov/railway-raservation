@@ -189,8 +189,9 @@ public class UserService {
                 .build();
     }
 
-    public StandardResponse<UserForFront> update(UserDto userDto,Principal principal){
-        UserEntity userEntity = userRepository.findUserEntityByEmail(principal.getName());
+    public StandardResponse<UserForFront> update(UserDto userDto,Principal principal,UUID id){
+        UserEntity user = userRepository.findUserEntityByEmail(principal.getName());
+        UserEntity userEntity = userRepository.findUserEntityById(id);
         if (userEntity==null){
             throw new DataNotFoundException("User not found!");
         }
@@ -202,6 +203,7 @@ public class UserService {
         }catch (Exception e){
             throw new NotAcceptableException("Invalid gender type!");
         }
+        userEntity.setUpdatedBy(user.getId());
         userEntity.setEmail(userDto.getEmail());
         userEntity.setNumber(userDto.getNumber());
         UserEntity save = userRepository.save(userEntity);
@@ -211,5 +213,13 @@ public class UserService {
                 .data(userForFront)
                 .message("Profile updated!")
                 .build();
+    }
+
+    public List<OrderEntity> getMyOrders(UUID id){
+        List<OrderEntity> orderEntities = orderRepository.findOrderEntityByCreatedBy(id);
+        if (orderEntities.isEmpty()){
+            throw new DataNotFoundException("Orders not found!");
+        }
+        return orderEntities;
     }
 }
