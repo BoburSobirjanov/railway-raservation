@@ -11,6 +11,7 @@ import uz.com.railway_reservation.service.WagonService;
 
 import java.security.Principal;
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequiredArgsConstructor
@@ -27,16 +28,16 @@ public class WagonController {
         return wagonService.save(wagonDto, principal);
     }
 
-    @PostMapping("/delete")
+    @DeleteMapping("/delete")
     @PreAuthorize("hasRole('ADMIN')")
     public StandardResponse<String> delete(
-            @RequestParam String wagonNumber,
+            @RequestParam UUID id,
             Principal principal
     ){
-        return wagonService.delete(wagonNumber, principal);
+        return wagonService.delete(id, principal);
     }
 
-    @PostMapping("/get-by-type")
+    @GetMapping("/get-by-type")
     public List<WagonEntity> getByType(
             @RequestParam String type
     ){
@@ -48,7 +49,7 @@ public class WagonController {
         return wagonService.getAll();
     }
 
-    @PostMapping("/update-wagon")
+    @PutMapping("/update-wagon")
     @PreAuthorize("hasRole('ADMIN')")
     public StandardResponse<WagonForFront> updateWagon(
             @RequestBody WagonDto wagonDto,

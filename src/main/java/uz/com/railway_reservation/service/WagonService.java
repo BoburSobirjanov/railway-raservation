@@ -21,6 +21,7 @@ import uz.com.railway_reservation.response.Status;
 import java.security.Principal;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 
 
 @Service
@@ -60,9 +61,9 @@ public class WagonService {
             throw new DataHasAlreadyExistException("Wagon has already added!");
         }
     }
-    public StandardResponse<String> delete(String number,Principal principal){
+    public StandardResponse<String> delete(UUID id, Principal principal){
         UserEntity user = userRepository.findUserEntityByEmail(principal.getName());
-        WagonEntity wagon= wagonRepository.findWagonEntityByNumber(number);
+        WagonEntity wagon= wagonRepository.findWagonEntityById(id);
         if (wagon==null){
             throw new DataNotFoundException("Wagon not found!");
         }
