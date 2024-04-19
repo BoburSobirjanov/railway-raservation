@@ -28,9 +28,9 @@ public class OrderController {
         return orderService.save(orderDto, principal);
     }
 
-    @PutMapping("/cancel")
+    @PutMapping("/{id}/cancel")
     public StandardResponse<OrderForFront> cancel(
-            @RequestParam UUID id,
+            @PathVariable UUID id,
             Principal principal
     ){
         return orderService.cancelOrder(id, principal);

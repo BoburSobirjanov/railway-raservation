@@ -42,6 +42,8 @@ public class UserEntity extends BaseModel implements UserDetails {
 
     @Enumerated(EnumType.STRING)
     private Gender gender;
+
+    private UUID updatedBy;
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         List<SimpleGrantedAuthority> authorities = new ArrayList<>();
