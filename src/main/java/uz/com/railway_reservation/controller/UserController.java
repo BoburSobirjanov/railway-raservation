@@ -21,10 +21,10 @@ public class UserController {
 
     private final UserService userService;
 
-    @DeleteMapping("/{id}/delete")
+    @DeleteMapping("/delete")
     @PreAuthorize("hasRole('ADMIN')")
     public StandardResponse<String> delete(
-            @PathVariable UUID id,
+            @RequestParam UUID id,
             Principal principal
             ){
       return userService.delete(id, principal);
@@ -38,10 +38,10 @@ public class UserController {
         return userService.getByEmail(email);
     }
 
-    @PostMapping("/{id}")
+    @GetMapping("/get-by-id")
     @PreAuthorize("hasRole('ADMIN')")
     public StandardResponse<UserForFront> getById(
-            @PathVariable UUID id
+            @RequestParam UUID id
     ){
         return userService.getById(id);
     }
@@ -52,7 +52,7 @@ public class UserController {
         return userService.getAll();
     }
 
-    @PostMapping("/get-by-number")
+    @GetMapping("/get-by-number")
     @PreAuthorize("hasRole('ADMIN')")
     public StandardResponse<UserForFront> getByNumber(
             @RequestParam String number
@@ -68,7 +68,7 @@ public class UserController {
         return userService.addAdmin(adminDto, principal);
     }
 
-    @PostMapping("/update-profile")
+    @PutMapping("/update-profile")
     public StandardResponse<UserForFront> update(
             @RequestBody UserDto userDto,
             Principal principal
