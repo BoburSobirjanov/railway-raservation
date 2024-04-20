@@ -22,10 +22,10 @@ public class UserController {
 
     private final UserService userService;
 
-    @DeleteMapping("/{id}/delete")
+    @DeleteMapping("/delete")
     @PreAuthorize("hasRole('ADMIN')")
     public StandardResponse<String> delete(
-            @PathVariable UUID id,
+            @RequestParam UUID id,
             Principal principal
             ){
       return userService.delete(id, principal);
@@ -39,10 +39,10 @@ public class UserController {
         return userService.getByEmail(email);
     }
 
-    @GetMapping("/{id}/get-by-id")
+    @GetMapping("/get-by-id")
     @PreAuthorize("hasRole('ADMIN')")
     public StandardResponse<UserForFront> getById(
-            @PathVariable UUID id
+            @RequestParam UUID id
     ){
         return userService.getById(id);
     }
@@ -69,18 +69,18 @@ public class UserController {
         return userService.addAdmin(adminDto, principal);
     }
 
-    @PutMapping("/{id}/update-profile")
+    @PutMapping("/update-profile")
     public StandardResponse<UserForFront> update(
-            @PathVariable UUID id,
+            @RequestParam UUID id,
             @RequestBody UserDto userDto,
             Principal principal
             ){
       return  userService.update(userDto, principal,id);
     }
 
-    @GetMapping("/{id}/get-my-orders")
+    @GetMapping("/get-my-orders")
     public List<OrderEntity> getMyOrders(
-            @PathVariable UUID id
+            @RequestParam UUID id
     ){
         return userService.getMyOrders(id);
     }

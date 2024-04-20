@@ -28,18 +28,18 @@ public class OrderController {
         return orderService.save(orderDto, principal);
     }
 
-    @PutMapping("/{id}/cancel")
+    @PutMapping("/cancel")
     public StandardResponse<OrderForFront> cancel(
-            @PathVariable UUID id,
+            @RequestParam UUID id,
             Principal principal
     ){
         return orderService.cancelOrder(id, principal);
     }
 
-    @DeleteMapping("/{id}/delete")
+    @DeleteMapping("/delete")
     @PreAuthorize("hasRole('ADMIN')")
     public StandardResponse<OrderForFront> delete(
-            @PathVariable UUID id,
+            @RequestParam UUID id,
             Principal principal
     ){
         return orderService.delete(id, principal);
@@ -58,10 +58,10 @@ public class OrderController {
         return orderService.getAll();
     }
 
-    @PutMapping("/{id}/change-order-time")
+    @PutMapping("/change-order-time")
     public StandardResponse<OrderForFront> changeOrderTime(
             @RequestBody ChangeOrderTime change,
-            @PathVariable UUID id,
+            @RequestParam UUID id,
             Principal principal
             ){
        return orderService.changeOrderTime(id, change,principal);
