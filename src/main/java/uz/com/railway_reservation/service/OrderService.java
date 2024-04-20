@@ -58,6 +58,7 @@ public class OrderService {
         if (endTime.isBefore(startTime)){
             throw new NotAcceptableException("Times is not available");
         }
+
         OrderEntity orderEntity = modelMapper.map(orderDto, OrderEntity.class);
         Duration duration = Duration.between(startTime, endTime);
         Long hours = duration.toHours();
