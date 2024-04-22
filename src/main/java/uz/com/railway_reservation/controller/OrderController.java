@@ -66,4 +66,11 @@ public class OrderController {
             ){
        return orderService.changeOrderTime(id, change,principal);
     }
+
+    @GetMapping("/get-order-by-id")
+    public StandardResponse<OrderForFront> getById(
+            @RequestParam UUID id
+    ){
+        return orderService.getById(id);
+    }
 }
