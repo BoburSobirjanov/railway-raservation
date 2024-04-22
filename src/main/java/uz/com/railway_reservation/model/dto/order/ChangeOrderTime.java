@@ -11,5 +11,9 @@ public class ChangeOrderTime {
 
     private String startTime;
 
+    private String fromWhere;
+
+    private String toWhere;
+
     private String endTime;
 }

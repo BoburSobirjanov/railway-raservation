@@ -72,6 +72,7 @@ public class OrderService {
         orderEntity.setEndTime(LocalDateTime.parse(orderDto.getEndTime()));
         orderRepository.save(orderEntity);
         OrderForFront orderForFront = modelMapper.map(orderEntity, OrderForFront.class);
+        orderForFront.setType(wagon.getType());
         return StandardResponse.<OrderForFront>builder()
                 .status(Status.SUCCESS)
                 .message("Order created!")
@@ -151,6 +152,8 @@ public class OrderService {
         if (order.getStartTime().isAfter(LocalDateTime.now().minusHours(24))){
             throw new NotAcceptableException("You can change the order's start time to 24 hours earlier");
         }
+        order.setFromWhere(change.getFromWhere());
+        order.setToWhere(change.getToWhere());
         order.setStartTime(startTime);
         order.setEndTime(endTime);
        OrderEntity save = orderRepository.save(order);
