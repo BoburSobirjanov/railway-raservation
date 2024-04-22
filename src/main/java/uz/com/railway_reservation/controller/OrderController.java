@@ -68,7 +68,7 @@ public class OrderController {
     }
 
     @GetMapping("/get-order-by-id")
-    public StandardResponse<OrderForFront> getById(
+    public OrderEntity getById(
             @RequestParam UUID id
     ){
         return orderService.getById(id);

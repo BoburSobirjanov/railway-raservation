@@ -165,17 +165,13 @@ public class OrderService {
                .build();
    }
 
-   public StandardResponse<OrderForFront> getById(UUID id){
+   public OrderEntity getById(UUID id){
         OrderEntity order = orderRepository.findOrderEntityById(id);
         if (order==null){
             throw new DataNotFoundException("Order not found!");
         }
-        OrderForFront orderForFront = modelMapper.map(order, OrderForFront.class);
 
-        return StandardResponse.<OrderForFront>builder()
-                .status(Status.SUCCESS)
-                .data(orderForFront)
-                .message("ORDER HAS GOT")
-                .build();
+
+        return order;
    }
 }
