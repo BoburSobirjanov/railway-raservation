@@ -178,6 +178,9 @@ public class UserService {
         if (userEntity==null){
             throw new DataNotFoundException("User not found same this email!");
         }
+        if (userEntity.getRole()==UserRole.ADMIN){
+            throw new NotAcceptableException("You are already an ADMIN!");
+        }
         userEntity.setRole(UserRole.ADMIN);
         userEntity.setChangeRoleBy(user.getId());
         UserEntity save = userRepository.save(userEntity);
@@ -213,13 +216,5 @@ public class UserService {
                 .data(userForFront)
                 .message("Profile updated!")
                 .build();
-    }
-
-    public List<OrderEntity> getMyOrders(UUID id){
-        List<OrderEntity> orderEntities = orderRepository.findOrderEntityByCreatedBy(id);
-        if (orderEntities.isEmpty()){
-            throw new DataNotFoundException("Orders not found!");
-        }
-        return orderEntities;
     }
 }

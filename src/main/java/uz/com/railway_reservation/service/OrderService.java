@@ -146,7 +146,7 @@ public class OrderService {
         if (order==null){
             throw new DataNotFoundException("Order not found!");
         }
-        if (order.getCreatedBy()!=user.getId()){
+        if (order.getOwner()!=user){
             throw new NotAcceptableException("You can not change this order. Because you are not order's owner!");
         }
         if (order.getStartTime().isAfter(LocalDateTime.now().minusHours(24))){
@@ -174,4 +174,12 @@ public class OrderService {
 
         return order;
    }
+
+    public List<OrderEntity> getMyOrders(UUID id){
+        List<OrderEntity> orderEntities = orderRepository.findOrderEntityByCreatedBy(id);
+        if (orderEntities.isEmpty()){
+            throw new DataNotFoundException("Orders not found!");
+        }
+        return orderEntities;
+    }
 }

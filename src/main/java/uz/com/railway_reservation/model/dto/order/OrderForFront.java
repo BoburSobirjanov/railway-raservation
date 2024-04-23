@@ -30,4 +30,6 @@ public class OrderForFront {
 
     private WagonType type;
 
+    private boolean isCancel;
+
 }
