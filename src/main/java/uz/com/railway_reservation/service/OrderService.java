@@ -69,6 +69,7 @@ public class OrderService {
         orderEntity.setWagonId(UUID.fromString(orderDto.getWagonId()));
         orderEntity.setCreatedBy(user.getId());
         orderEntity.setOwner(user);
+        orderEntity.setType(wagon.getType());
         orderEntity.setEndTime(LocalDateTime.parse(orderDto.getEndTime()));
         orderRepository.save(orderEntity);
         OrderForFront orderForFront = modelMapper.map(orderEntity, OrderForFront.class);
@@ -86,7 +87,7 @@ public class OrderService {
         if (order==null){
             throw new DataNotFoundException("Order not found!");
         }
-        if(order.getStartTime().isAfter(LocalDateTime.now().minusHours(24))){
+        if(LocalDateTime.now().minusHours(24).isAfter(order.getEndTime())){
             throw new NotAcceptableException("You can cancel order before 24 hours start time!");
         }
         order.setCancel(true);
@@ -149,7 +150,7 @@ public class OrderService {
         if (order.getOwner()!=user){
             throw new NotAcceptableException("You can not change this order. Because you are not order's owner!");
         }
-        if (order.getStartTime().isAfter(LocalDateTime.now().plusHours(24))){
+        if (LocalDateTime.now().plusHours(24).isAfter(order.getEndTime())){
             throw new NotAcceptableException("You can change the order's start time to 24 hours earlier");
         }
         order.setFromWhere(change.getFromWhere());
@@ -164,14 +165,13 @@ public class OrderService {
                .message("Order's times changed!")
                .build();
    }
-
    public OrderEntity getById(UUID id){
         OrderEntity order = orderRepository.findOrderEntityById(id);
         if (order==null){
             throw new DataNotFoundException("Order not found!");
         }
-
-
+       WagonEntity wagon = wagonRepository.findWagonEntityById(order.getWagonId());
+       order.setType(wagon.getType());
         return order;
    }
 
