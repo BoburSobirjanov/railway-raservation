@@ -64,7 +64,7 @@ public class UserService {
                 .build();
         return StandardResponse.<JwtResponse>builder()
                 .status(Status.SUCCESS)
-                .message("Successfully signed Up")
+                .message("SIGN UP SUCCESSFULLY!")
                 .data(jwtResponse)
                 .build();
     }
@@ -94,7 +94,7 @@ public class UserService {
                     .build();
             return StandardResponse.<JwtResponse>builder()
                     .status(Status.SUCCESS)
-                    .message("Sign in successfully!")
+                    .message("SIGN IN SUCCESSFULLY!")
                     .data(jwtResponse)
                     .build();
         }
@@ -121,7 +121,7 @@ public class UserService {
         return StandardResponse.<String>builder()
                 .data("User deleted successfully!")
                 .status(Status.SUCCESS)
-                .message("DELETED")
+                .message("USER DELETED")
                 .build();
     }
 
@@ -134,7 +134,7 @@ public class UserService {
         return StandardResponse.<UserForFront>builder()
                 .status(Status.SUCCESS)
                 .data(user)
-                .message("This is user")
+                .message("USER HAS GOT")
                 .build();
     }
 
@@ -148,7 +148,7 @@ public class UserService {
         return StandardResponse.<UserForFront>builder()
                 .status(Status.SUCCESS)
                 .data(user)
-                .message("This is user")
+                .message("USER HAS GOT")
                 .build();
     }
 
@@ -169,7 +169,7 @@ public class UserService {
         return StandardResponse.<UserForFront>builder()
                 .status(Status.SUCCESS)
                 .data(user)
-                .message("This is user!")
+                .message("USER HAS GOT!")
                 .build();
     }
     public StandardResponse<UserForFront> addAdmin(AdminDto adminDto, Principal principal){
@@ -188,7 +188,7 @@ public class UserService {
         return StandardResponse.<UserForFront>builder()
                 .status(Status.SUCCESS)
                 .data(userForFront)
-                .message("Admin added!")
+                .message("ADMIN ADDED!")
                 .build();
     }
 
@@ -214,7 +214,7 @@ public class UserService {
         return StandardResponse.<UserForFront>builder()
                 .status(Status.SUCCESS)
                 .data(userForFront)
-                .message("Profile updated!")
+                .message("PROFILE UPDATED!")
                 .build();
     }
 }
