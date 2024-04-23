@@ -149,7 +149,7 @@ public class OrderService {
         if (order.getOwner()!=user){
             throw new NotAcceptableException("You can not change this order. Because you are not order's owner!");
         }
-        if (order.getStartTime().isAfter(LocalDateTime.now().minusHours(24))){
+        if (order.getStartTime().isAfter(LocalDateTime.now().plusHours(24))){
             throw new NotAcceptableException("You can change the order's start time to 24 hours earlier");
         }
         order.setFromWhere(change.getFromWhere());
