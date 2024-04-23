@@ -76,7 +76,7 @@ public class OrderService {
         orderForFront.setType(wagon.getType());
         return StandardResponse.<OrderForFront>builder()
                 .status(Status.SUCCESS)
-                .message("Order created!")
+                .message("ORDER CREATED!")
                 .data(orderForFront)
                 .build();
    }
@@ -97,7 +97,7 @@ public class OrderService {
        return StandardResponse.<OrderForFront>builder()
                .data(orderForFront)
                .status(Status.SUCCESS)
-               .message("CANCELED")
+               .message("ORDER CANCELED")
                .build();
    }
 
@@ -118,7 +118,7 @@ public class OrderService {
        return StandardResponse.<OrderForFront>builder()
                .data(orderForFront)
                .status(Status.SUCCESS)
-               .message("DELETED")
+               .message("ORDER DELETED")
                .build();
    }
 
@@ -147,12 +147,16 @@ public class OrderService {
         if (order==null){
             throw new DataNotFoundException("Order not found!");
         }
+       if (order.isCancel()){
+           throw new NotAcceptableException("This order has already canceled! You can not change this order!");
+       }
         if (order.getOwner()!=user){
             throw new NotAcceptableException("You can not change this order. Because you are not order's owner!");
         }
         if (LocalDateTime.now().plusHours(24).isAfter(order.getEndTime())){
             throw new NotAcceptableException("You can change the order's start time to 24 hours earlier");
         }
+        order.setUpdatedTime(LocalDateTime.now());
         order.setFromWhere(change.getFromWhere());
         order.setToWhere(change.getToWhere());
         order.setStartTime(startTime);
@@ -162,7 +166,7 @@ public class OrderService {
        return StandardResponse.<OrderForFront>builder()
                .status(Status.SUCCESS)
                .data(orderForFront)
-               .message("Order's times changed!")
+               .message("ORDER'S CHANGED!")
                .build();
    }
    public OrderEntity getById(UUID id){

@@ -51,7 +51,7 @@ public class WagonService {
         WagonForFront wagonForFront = modelMapper.map(wagonEntity, WagonForFront.class);
         return StandardResponse.<WagonForFront>builder()
                 .status(Status.SUCCESS)
-                .message("Wagon added!")
+                .message("WAGON ADDED!")
                 .data(wagonForFront)
                 .build();
     }
@@ -83,7 +83,7 @@ public class WagonService {
         return StandardResponse.<String>builder()
                 .status(Status.SUCCESS)
                 .message("Wagon deleted!")
-                .data("DELETED")
+                .data("WAGON DELETED")
                 .build();
     }
 
@@ -123,7 +123,7 @@ public class WagonService {
         WagonForFront wagonForFront = modelMapper.map(wagon, WagonForFront.class);
         return StandardResponse.<WagonForFront>builder()
                 .status(Status.SUCCESS)
-                .message("Wagon updated!")
+                .message("WAGON UPDATED!")
                 .data(wagonForFront)
                 .build();
     }
