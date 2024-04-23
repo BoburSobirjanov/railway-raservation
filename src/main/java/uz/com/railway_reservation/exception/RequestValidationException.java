@@ -1,9 +1,11 @@
 package uz.com.railway_reservation.exception;
 
+import lombok.Getter;
 import org.springframework.validation.ObjectError;
 
 import java.util.List;
 
+@Getter
 public class RequestValidationException extends RuntimeException {
     String message;
 
@@ -15,7 +17,4 @@ public class RequestValidationException extends RuntimeException {
         this.message = errorMessage.toString();
     }
 
-    public String getMessage() {
-        return message;
-    }
 }

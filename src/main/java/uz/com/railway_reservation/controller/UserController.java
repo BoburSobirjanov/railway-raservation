@@ -9,6 +9,7 @@ import uz.com.railway_reservation.model.dto.user.UserForFront;
 import uz.com.railway_reservation.model.entity.order.OrderEntity;
 import uz.com.railway_reservation.model.entity.user.UserEntity;
 import uz.com.railway_reservation.response.StandardResponse;
+import uz.com.railway_reservation.service.OrderService;
 import uz.com.railway_reservation.service.UserService;
 
 import java.security.Principal;
@@ -21,6 +22,7 @@ import java.util.UUID;
 public class UserController {
 
     private final UserService userService;
+    private final OrderService orderService;
 
     @DeleteMapping("/delete")
     @PreAuthorize("hasRole('ADMIN')")
@@ -81,6 +83,6 @@ public class UserController {
     public List<OrderEntity> getMyOrders(
             @RequestParam UUID id
     ){
-        return userService.getMyOrders(id);
+        return orderService.getMyOrders(id);
     }
 }
