@@ -10,6 +10,7 @@ import uz.com.railway_reservation.model.dto.order.OrderDto;
 import uz.com.railway_reservation.model.dto.order.OrderForFront;
 import uz.com.railway_reservation.model.entity.order.OrderEntity;
 import uz.com.railway_reservation.model.entity.user.UserEntity;
+import uz.com.railway_reservation.model.entity.user.UserRole;
 import uz.com.railway_reservation.model.entity.wagon.WagonEntity;
 import uz.com.railway_reservation.repository.OrderRepository;
 import uz.com.railway_reservation.repository.UserRepository;
@@ -104,11 +105,13 @@ public class OrderService {
    public StandardResponse<OrderForFront> delete(UUID id, Principal principal){
        UserEntity user = userRepository.findUserEntityByEmail(principal.getName());
        OrderEntity order = orderRepository.findOrderEntityById(id);
-       if (order==null){
+       if (order == null) {
            throw new DataNotFoundException("Order not found!");
        }
-       if(order.getEndTime().isAfter(LocalDateTime.now()) || order.isCancel()){
-           throw new NotAcceptableException("Can not delete this order. Because this order has not passed yet!");
+       if (!order.isCancel()) {
+           if (order.getEndTime().isAfter(LocalDateTime.now()) || order.isCancel()) {
+               throw new NotAcceptableException("Can not delete this order. Because this order has not passed yet!");
+           }
        }
        order.setDeleted(true);
        order.setDeletedBy(user.getId());
@@ -150,9 +153,11 @@ public class OrderService {
        if (order.isCancel()){
            throw new NotAcceptableException("This order has already canceled! You can not change this order!");
        }
+       if (user.getRole()!= UserRole.ADMIN){
         if (order.getOwner()!=user){
             throw new NotAcceptableException("You can not change this order. Because you are not order's owner!");
         }
+       }
         if (LocalDateTime.now().plusHours(24).isAfter(order.getEndTime())){
             throw new NotAcceptableException("You can change the order's start time to 24 hours earlier");
         }
