@@ -120,7 +120,8 @@ public class WagonService {
         wagon.setNumber(wagonDto.getNumber());
         wagon.setDescription(wagonDto.getDescription());
         wagon.setPrice(wagon.getType().getAmount());
-        WagonForFront wagonForFront = modelMapper.map(wagon, WagonForFront.class);
+        WagonEntity save = wagonRepository.save(wagon);
+        WagonForFront wagonForFront = modelMapper.map(save, WagonForFront.class);
         return StandardResponse.<WagonForFront>builder()
                 .status(Status.SUCCESS)
                 .message("WAGON UPDATED!")
