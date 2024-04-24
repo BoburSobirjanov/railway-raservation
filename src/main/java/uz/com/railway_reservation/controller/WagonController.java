@@ -53,8 +53,9 @@ public class WagonController {
     @PreAuthorize("hasRole('ADMIN')")
     public StandardResponse<WagonForFront> updateWagon(
             @RequestBody WagonDto wagonDto,
+            @RequestParam UUID id,
             Principal principal
     ){
-        return wagonService.updateWagon(wagonDto, principal);
+        return wagonService.updateWagon(wagonDto, principal,id);
     }
 }

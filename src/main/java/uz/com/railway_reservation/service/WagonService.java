@@ -103,8 +103,8 @@ public class WagonService {
         return wagonEntities;
     }
 
-    public StandardResponse<WagonForFront> updateWagon(WagonDto wagonDto, Principal principal){
-        WagonEntity wagon = wagonRepository.findWagonEntityByNumber(wagonDto.getNumber());
+    public StandardResponse<WagonForFront> updateWagon(WagonDto wagonDto, Principal principal,UUID id){
+        WagonEntity wagon = wagonRepository.findWagonEntityById(id);
         UserEntity user = userRepository.findUserEntityByEmail(principal.getName());
         if (wagon==null){
             throw new DataNotFoundException("Wagon not found!");
