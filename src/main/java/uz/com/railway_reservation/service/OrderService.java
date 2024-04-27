@@ -44,13 +44,13 @@ public class OrderService {
         }
         List<OrderEntity> orderEntities = orderRepository.findOrderEntityByWagonId(wagon.getId());
         for (OrderEntity order: orderEntities) {
-            if((startTime.isAfter(order.getStartTime()) && startTime.isBefore(order.getEndTime()))
+            if(startTime.isAfter(order.getStartTime())
                     || startTime.isEqual(order.getStartTime()) || startTime.isBefore(LocalDateTime.now()) || startTime.isAfter(endTime)){
-            throw new NotAcceptableException("Wagon is busy in this time!");
+            throw new NotAcceptableException("Wagon is busy in this time or time is not available!");
         }
             if((endTime.isAfter(order.getStartTime()) && endTime.isBefore(order.getEndTime()))
                     || endTime.isBefore(LocalDateTime.now()) || endTime.isBefore(startTime) || endTime.isEqual(order.getEndTime())){
-                throw new NotAcceptableException("Wagon is busy in this time!");
+                throw new NotAcceptableException("Wagon is busy in this time or something wrong!");
             }
     }
         if (LocalDateTime.parse(orderDto.getStartTime()).isBefore(LocalDateTime.now())){
@@ -112,6 +112,9 @@ public class OrderService {
            if (order.getEndTime().isAfter(LocalDateTime.now()) || order.isCancel()) {
                throw new NotAcceptableException("Can not delete this order. Because this order has not passed yet!");
            }
+       }
+       if (order.getEndTime().isAfter(LocalDateTime.now()) && !order.isCancel()){
+           throw new NotAcceptableException("You can not delete this order. Because this order is active now!");
        }
        order.setDeleted(true);
        order.setDeletedBy(user.getId());
