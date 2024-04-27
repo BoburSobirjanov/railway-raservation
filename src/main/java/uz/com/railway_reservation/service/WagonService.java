@@ -70,8 +70,7 @@ public class WagonService {
         List<OrderEntity> orderEntities = orderRepository.findOrderEntityByWagonId(wagon.getId());
         if (orderEntities!=null){
             for (OrderEntity order:orderEntities) {
-                if (order.getStartTime().isAfter(LocalDateTime.now()) || order.getStartTime().isEqual(LocalDateTime.now())
-                || order.getEndTime().isAfter(LocalDateTime.now())){
+                if (order.getStartTime().isAfter(LocalDateTime.now()) || order.getEndTime().isAfter(LocalDateTime.now())){
                     throw new NotAcceptableException("You can not delete wagon. Because it has order!");
                 }
             }
